@@ -1,0 +1,51 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+//postgresql://neondb_owner:npg_DvzYCgrq04Vc@ep-frosty-queen-a5aw4nqw-pooler.us-east-2.aws.neon.tech/neondb?sslmode=require
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+
+
+model User{
+    id  String     @id @default(uuid())
+    email String
+    password String 
+    name String
+    photo String 
+    room  Room[]
+    chat Chat[]
+}
+
+
+model Room{
+
+   id  Int  @id  @default(autoincrement())
+   slug String 
+   createdAt  DateTime  @default(now())
+   adminId String
+   admin     User  @relation(fields: [adminId] , references: [id])
+   chat Chat[]
+
+
+}
+
+
+model Chat {
+     id Int @id  @default(autoincrement())
+     message String 
+     roomId Int 
+     userId String
+     user  User @relation(fields: [userId] , references: [id])
+     room   Room  @relation(fields: [roomId] , references: [id])
+
+}
