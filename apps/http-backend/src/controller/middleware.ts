@@ -3,11 +3,12 @@ import { Request, Response ,NextFunction } from "express";
 
 
 
-exports.middleware =  async(req:Request , res:Response  , next:NextFunction)=>
+export const middleware =  async(req:Request , res:Response  , next:NextFunction)=>
 {
       try
       {   
             const {token} =  req.cookies;
+            console.log(token);
 
             if(!token)
             {

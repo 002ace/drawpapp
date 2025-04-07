@@ -1,1 +1,1 @@
-{"root":["./src/index.ts","./src/config/dbconnect.ts","./src/controller/middleware.ts","./src/controller/user.ts","./src/model/userschema.ts"],"version":"5.8.2"}
+{"root":["./src/index.ts","./src/controller/middleware.ts","./src/controller/user.ts","./src/routes/userroute.ts"],"version":"5.8.2"}
