@@ -1,8 +1,9 @@
-import  {User} from "../model/userSchema";
+
 import { Request, Response } from "express";
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken";
 import {jwt_secret}  from "@repo/backend-common/config"
+import {prismaClient}  from "@repo/db/client"
 
 
 interface SignupBody {
@@ -18,7 +19,7 @@ interface LoginBody{
     
 }
 
-exports.signup   = async(req: Request<SignupBody> , res:Response) =>{
+export const signup   = async(req: Request<SignupBody> , res:Response) =>{
      try
      {     // @ts-ignore
            const{name , email , password} = req.body ;
@@ -29,8 +30,11 @@ exports.signup   = async(req: Request<SignupBody> , res:Response) =>{
               message: "All fields are required",
             });
            }
-          
-          const findDetails = User.findOne({email});
+          //@ts-ignore
+          const findDetails =  await prismaClient.user.findUnique({
+                                 //@ts-ignore
+                                  where:{email}
+                               })
           // @ts-ignore
           if(findDetails)
           {
@@ -43,12 +47,15 @@ exports.signup   = async(req: Request<SignupBody> , res:Response) =>{
 
           const hashpassword  =  await bcrypt.hash(password , 10);
 
-          const user  =  await User.create({
-                                name,
-                                email,
-                                password:hashpassword
-             
-                             })
+          const user  =  await  prismaClient.user.create({
+                            //@ts-ignore
+                            data:{
+                                 name,
+                                 email,
+                                 password:hashpassword
+                            }
+
+                          })
 
            return res.status(200).json({
                 success:true,
@@ -73,7 +80,7 @@ exports.signup   = async(req: Request<SignupBody> , res:Response) =>{
 }
 
 
-exports.login  =  async(req:Request<LoginBody> , res:Response) =>{
+export const login  =  async(req:Request<LoginBody> , res:Response) =>{
       try
       {   
             const{email,password} =  req.body  ;
@@ -87,7 +94,10 @@ exports.login  =  async(req:Request<LoginBody> , res:Response) =>{
                    })
             }
 
-            const user  =  await User.findOne({email});
+            const user  =  await prismaClient.user.findUnique({
+                                      //@ts-ignore
+                                      where:{email}
+                                  });
 
             if(user === null)
             {    
@@ -105,7 +115,7 @@ exports.login  =  async(req:Request<LoginBody> , res:Response) =>{
             }
 
             const payload  =  {
-                  userId  : user._id,
+                  userId  : user.id,
                   name:user.name
             }
             

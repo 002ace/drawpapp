@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import { Request, Response ,NextFunction } from "express";
-import  {User} from "../model/userSchema";
+
 
 
 exports.middleware =  async(req:Request , res:Response  , next:NextFunction)=>
